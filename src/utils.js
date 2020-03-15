@@ -1,9 +1,23 @@
 const fse = require('fs-extra')
 const path = require('path')
 const inquirer = require('inquirer')
+const cp = require('child_process')
 
 const currentDir = process.cwd()
 const sourceRootDir = path.join(__dirname, '..')
+
+const selectPackageManager = async () => {
+  const { manager } = await inquirer.prompt([
+    {
+      type: 'list',
+      message: 'Pick the package manager you want to use:',
+      name: 'manager',
+      choices: ['yarn', 'npm'],
+    },
+  ])
+
+  return manager
+}
 
 const selectLanguage = async () => {
   const { language } = await inquirer.prompt([
@@ -11,7 +25,7 @@ const selectLanguage = async () => {
       type: 'list',
       message: 'Pick the language you want to use:',
       name: 'language',
-      choices: ['javascript', 'typescript'],
+      choices: ['typescript', 'javascript'],
     },
   ])
 
@@ -49,6 +63,18 @@ const installApp = async () => {
   }
 }
 
+const installPackages = async () => {
+  try {
+    const manager = await selectPackageManager()
+    console.log('🍉 Installing packages ...')
+    cp.execSync(`cd server && ${manager} install`)
+    if (manager === 'npm')
+      cp.execSync(`cd server && rm -rf yarn.lock`)
+  } catch (e) {
+    throw Error(`Could not install packages.`)
+  }
+}
+
 const displaySuccessMessage = () => {
   console.log('')
   console.log('💫 App was installed successfully!')
@@ -68,13 +94,14 @@ const displayErrorMessage = error => {
     'To get help with this problem, please submit an issue to: ',
   )
   console.log(
-    'https://github.com/iampika/create-pika-app/issues',
+    'https://github.com/iampika/pika-create-server/issues',
   )
   console.log('')
 }
 
 module.exports = {
   installApp,
+  installPackages,
   displaySuccessMessage,
   displayErrorMessage,
 }

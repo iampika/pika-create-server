@@ -2,6 +2,7 @@
 
 const {
   installApp,
+  installPackages,
   displaySuccessMessage,
   displayErrorMessage,
 } = require('./utils')
@@ -9,6 +10,7 @@ const {
 ;(async () => {
   try {
     await installApp()
+    await installPackages()
     displaySuccessMessage()
   } catch (e) {
     displayErrorMessage(e)
