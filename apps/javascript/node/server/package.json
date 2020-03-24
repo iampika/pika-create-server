@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "scripts": {
+    "start": "node dist/index.js",
+    "server": "nodemon src/index.ts",
+    "build": "tsc -p .",
+    "code:check": "yarn code:lint; yarn code:format --check",
+    "code:clean": "yarn code:lint --fix; yarn code:format --write",
+    "code:lint": "eslint --ext .js,.jsx,.ts,.tsx \"src/\"",
+    "code:format": "prettier './src/**/**.{js,jsx,ts,tsx}'",
+    "code:check:rules": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
+  },
+  "devDependencies": {
+    "@types/node": "^13.9.1",
+    "nodemon": "^2.0.2",
+    "poetic": "^1.4.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
+  }
+}
