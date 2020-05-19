@@ -58,6 +58,19 @@ const selectApp = async (choices) => {
   return app
 }
 
+const selectSessionStore = async (choices) => {
+  const { session } = await inquirer.prompt([
+    {
+      type: 'list',
+      message: 'Pick the session store you want to use:',
+      name: 'session',
+      choices: ['none', 'redis'],
+    },
+  ])
+
+  return session
+}
+
 const installApp = async () => {
   try {
     const language = await selectLanguage()
@@ -66,12 +79,14 @@ const installApp = async () => {
       database === 'none'
         ? await selectApp(['node', 'express'])
         : await selectApp(['express'])
+    const session =
+      database !== 'none' ? await selectSessionStore() : 'none'
 
     console.log('🍊 Installing app ...')
 
     const source = path.join(
       sourceRootDir,
-      `apps/${language}/${database}/${app}`,
+      `apps/${language}/${database}/${app}/${session}`,
     )
 
     fse.copySync(source, currentDir)
