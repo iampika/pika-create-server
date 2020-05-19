@@ -15,7 +15,6 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "checkJs": true,
     "jsx": "react",
     "noEmit": false
   }

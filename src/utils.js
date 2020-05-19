@@ -32,13 +32,26 @@ const selectLanguage = async () => {
   return language
 }
 
-const selectApp = async () => {
+const selectDatabase = async () => {
+  const { database } = await inquirer.prompt([
+    {
+      type: 'list',
+      message: 'Pick the database you want to use:',
+      name: 'database',
+      choices: ['none', 'mongodb', 'mongoose'],
+    },
+  ])
+
+  return database
+}
+
+const selectApp = async (choices) => {
   const { app } = await inquirer.prompt([
     {
       type: 'list',
       message: 'Pick the app you want to use:',
       name: 'app',
-      choices: ['node', 'express'],
+      choices,
     },
   ])
 
@@ -48,13 +61,17 @@ const selectApp = async () => {
 const installApp = async () => {
   try {
     const language = await selectLanguage()
-    const app = await selectApp()
+    const database = await selectDatabase()
+    const app =
+      database === 'none'
+        ? await selectApp(['node', 'express'])
+        : await selectApp(['express'])
 
     console.log('🍊 Installing app ...')
 
     const source = path.join(
       sourceRootDir,
-      `apps/${language}/${app}`,
+      `apps/${language}/${database}/${app}`,
     )
 
     fse.copySync(source, currentDir)
@@ -101,7 +118,7 @@ const displaySuccessMessage = () => {
   console.log('\nHappy hacking!\n')
 }
 
-const displayErrorMessage = error => {
+const displayErrorMessage = (error) => {
   console.error(`\n❌ ${error.message}\n`)
   console.log(
     'To get help with this problem, please submit an issue to: ',
